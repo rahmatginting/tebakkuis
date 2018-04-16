@@ -24,6 +24,7 @@ event
     // create bot object
     $httpClient = new CurlHTTPClient($_ENV['CHANNEL_ACCESS_TOKEN']);
     $this->bot  = new LINEBot($httpClient, ['channelSecret' => $_ENV['CHANNEL_SECRET']]);
+    
   }
 
   public function index()
