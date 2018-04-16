@@ -20,7 +20,7 @@ class Webhook extends CI_Controller {
   {
     parent::__construct();
     $this->load->model('tebakkode_m');
-
+event
     // create bot object
     $httpClient = new CurlHTTPClient($_ENV['CHANNEL_ACCESS_TOKEN']);
     $this->bot  = new LINEBot($httpClient, ['channelSecret' => $_ENV['CHANNEL_SECRET']]);
