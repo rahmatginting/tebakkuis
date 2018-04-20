@@ -31,7 +31,15 @@ class Webhook extends CI_Controller {
   {
  
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-      echo "Hello Coders!";
+      $categorys=$this->tebakkode_m->getCategory(1);
+      foreach($categorys as $category) {
+        
+          if(!empty($category['name']))            
+              //$options[] = new MessageTemplateActionBuilder($category['name'], $category['name']);
+            echo $category['name'] . "</br>";
+      }
+      
+      echo "Hello Resto01!";
       header('HTTP/1.1 400 Only POST method allowed');
       exit;
     }
@@ -152,12 +160,35 @@ private function textMessage($event)
     // get question from database
     $question = $this->tebakkode_m->getQuestion($questionNum);
  
+    /*
     // prepare answer options
     for($opsi = "a"; $opsi <= "d"; $opsi++) {
         if(!empty($question['option_'.$opsi]))
             $options[] = new MessageTemplateActionBuilder($question['option_'.$opsi], $question['option_'.$opsi]);
     }
- 
+    */
+
+    if ($questionNum==1) {
+      $options[] = new MessageTemplateActionBuilder('NOMOR MEJA', 'NOMOR MEJA');
+      
+    }else if ($questionNum==2) {
+      //Masukkan code disini
+      //Search Menu Category options
+      $categorys=$this->tebakkode_m->getCategory(1);
+      foreach($categorys as $category) {
+        
+          if(!empty($category['name']))
+              $options[] = new MessageTemplateActionBuilder($category['name'], $category['name']);
+      }      
+
+    }else {
+      // prepare answer options
+      for($opsi = "a"; $opsi <= "d"; $opsi++) {
+          if(!empty($question['option_'.$opsi]))
+              $options[] = new MessageTemplateActionBuilder($question['option_'.$opsi], $question['option_'.$opsi]);
+      }
+    }
+    
     // prepare button template
     $buttonTemplate = new ButtonTemplateBuilder($question['number']."/10", $question['text'], $question['image'], $options);
  
@@ -170,17 +201,28 @@ private function textMessage($event)
   
   private function checkAnswer($message, $replyToken)
   {
+    /*
     // if answer is true, increment score
     if($this->tebakkode_m->isAnswerEqual($this->user['number'], $message)){
       $this->user['score']++;
       $this->tebakkode_m->setScore($this->user['user_id'], $this->user['score']);
     }
- 
+    */
+    
     if($this->user['number'] < 10)
     {
       // update number progress
-     $this->tebakkode_m->setUserProgress($this->user['user_id'], $this->user['number'] + 1);
- 
+      $this->tebakkode_m->setUserProgress($this->user['user_id'], $this->user['number'] + 1);
+
+      //Proses Resto disini
+      if ($this->user['number']==1) {
+        // update restaurant and table code
+        $this->tebakkode_m->setRestoTable($this->user['user_id'], $message);
+
+      }else if ($this->user['number']==2) {
+        //Proses category menu
+      }
+      
       // send next question
       $this->sendQuestion($replyToken, $this->user['number'] + 1);
     }
@@ -208,7 +250,6 @@ private function textMessage($event)
       // send reply message
       $this->bot->replyMessage($replyToken, $multiMessageBuilder);
       $this->tebakkode_m->setUserProgress($this->user['user_id'], 0);
-      
     }
   }
   
