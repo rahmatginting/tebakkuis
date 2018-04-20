@@ -189,6 +189,7 @@ private function textMessage($event)
 
       // send next question
       $this->sendQuestion($replyToken, $this->user['number'] + 1);
+    }
     else {
       // create user score message
       $message = 'Skormu '. $this->user['score'];
