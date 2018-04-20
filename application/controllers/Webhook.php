@@ -171,19 +171,24 @@ private function textMessage($event)
   private function checkAnswer($message, $replyToken)
   {
     // if answer is true, increment score
-    if($this->tebakkode_m->isAnswerEqual($this->user['number'], $message)){
-      $this->user['score']++;
-      $this->tebakkode_m->setScore($this->user['user_id'], $this->user['score']);
-    }
- 
     if($this->user['number'] < 10)
     {
       // update number progress
-     $this->tebakkode_m->setUserProgress($this->user['user_id'], $this->user['number'] + 1);
+      $this->tebakkode_m->setUserProgress($this->user['user_id'], $this->user['number'] + 1);
  
+      //check each qustion number
+      if($this->user['number'] == 1)
+      {
+        // update restaurant and table code
+        $this->tebakkode_m->setRestoTable($this->user['user_id'], $message);
+
+      } else if($this->user['number'] == 2)
+      {
+
+      }
+
       // send next question
       $this->sendQuestion($replyToken, $this->user['number'] + 1);
-    }
     else {
       // create user score message
       $message = 'Skormu '. $this->user['score'];
