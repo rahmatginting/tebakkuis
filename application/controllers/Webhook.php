@@ -31,6 +31,18 @@ class Webhook extends CI_Controller {
   {
  
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+      /*
+      $this->tebakkode_m->setRestoTable('U4035bbada65f83a2ab7253095cd0e6e7', '1001');
+      
+      //Search Menu Category options
+      $categorys=$this->tebakkode_m->getCategory(1);
+      foreach($categorys as $category) {
+        
+          if(!empty($category['name']))
+              echo $category['name'] . '</br>';
+      }
+      */
+
       echo "Hello Coders!";
       header('HTTP/1.1 400 Only POST method allowed');
       exit;
@@ -151,13 +163,35 @@ private function textMessage($event)
   {
     // get question from database
     $question = $this->tebakkode_m->getQuestion($questionNum);
- 
+
+    if ($questionNum==2) {
+      //Search Menu Category options
+      $categorys=$this->tebakkode_m->getCategory(1);
+      foreach($categorys as $category) {
+        
+          if(!empty($category['name']))
+              $options[] = new MessageTemplateActionBuilder($category['name'], $category['name']);
+      }
+
+    } else {
+
+      // prepare answer options
+      for($opsi = "a"; $opsi <= "d"; $opsi++) {
+          if(!empty($question['option_'.$opsi]))
+              $options[] = new MessageTemplateActionBuilder($question['option_'.$opsi], $question['option_'.$opsi]);
+      }
+    }
+
+
+    /*
     // prepare answer options
     for($opsi = "a"; $opsi <= "d"; $opsi++) {
         if(!empty($question['option_'.$opsi]))
             $options[] = new MessageTemplateActionBuilder($question['option_'.$opsi], $question['option_'.$opsi]);
     }
- 
+    */
+
+
     // prepare button template
     $buttonTemplate = new ButtonTemplateBuilder($question['number']."/10", $question['text'], $question['image'], $options);
  
