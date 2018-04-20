@@ -208,6 +208,7 @@ private function textMessage($event)
       // send reply message
       $this->bot->replyMessage($replyToken, $multiMessageBuilder);
       $this->tebakkode_m->setUserProgress($this->user['user_id'], 0);
+      
     }
   }
   
